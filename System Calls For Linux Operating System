@@ -1,0 +1,97 @@
+//Program 1: Using fork(), wait(), and execvp()
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+int main() {
+    int pid;
+
+    printf("getpid()\nThe process id of current process: %d\n", getpid());
+    printf("fork() creates child process\n");
+
+    if (fork() != 0) {
+        printf("Parent process starts and wait() executes\n");
+        wait(NULL);
+        char *args[] = {"ls", NULL};
+        execvp(args[0], args);
+        exit(0);  // This line is never reached if execvp is successful
+        printf("Execution not ends and parent ends");
+    } else {
+        printf("Child process starts and ends\n");
+    }
+
+    printf("exit function\n");
+    exit(0);  // Ensures child exits cleanly
+    printf("exit not executing");
+    return 0;
+}
+
+
+//Program 2: File Statistics using stat()
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdlib.h>
+
+int main(void) {
+    char path1[100];
+    struct stat *nfile;
+
+    nfile = (struct stat*)malloc(sizeof(struct stat));
+
+    printf("Enter name of file whose statistics has to be displayed: ");
+    scanf("%s", path1);
+
+    if (stat(path1, nfile) == -1) {
+        perror("stat");
+        return 1;
+    }
+
+    printf("User ID            : %d\n", nfile->st_uid);
+    printf("Block Size         : %ld\n", nfile->st_blksize);
+    printf("Last Access Time   : %ld\n", nfile->st_atime);
+    printf("Last Modified Time : %ld\n", nfile->st_mtime);
+    printf("File Mode          : %o\n", nfile->st_mode);
+    printf("Size of File       : %ld bytes\n", nfile->st_size);
+    printf("Number of Links    : %ld\n", nfile->st_nlink);
+
+    free(nfile);
+    return 0;
+}
+
+
+//Program 3: List Files in a Directory
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <dirent.h>
+
+int main() {
+    char buff[256];
+    struct dirent *dptr;
+    DIR *dirp;
+
+    printf("\n\nEnter directory name: ");
+    scanf("%s", buff);
+
+    dirp = opendir(buff);
+    if (dirp == NULL) {
+        perror("opendir");
+        exit(1);
+    }
+
+    printf("Files in directory '%s':\n", buff);
+    while ((dptr = readdir(dirp)) != NULL) {
+        printf("%s\n", dptr->d_name);
+    }
+
+    closedir(dirp);
+    return 0;
+}
+
