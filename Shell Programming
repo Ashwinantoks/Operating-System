@@ -1,0 +1,102 @@
+//1. Display Name, Semester, Batch, and Roll Number
+
+echo "Enter the name"
+read name
+echo "Enter your semester"
+read semester
+echo "Enter your batch"
+read batch
+echo "Enter the roll number"
+read rollnumber
+echo "Name: $name"
+echo "Semester: $semester"
+echo "Batch: $batch"
+echo "Roll Number: $rollnumber"
+
+
+//2. Sum of Two Numbers
+
+echo "Enter the first number"
+read num1
+echo "Enter the second number"
+read num2
+sum=$(($num1 + $num2))
+echo "Sum is $sum"
+
+
+//3. Greatest of Two Numbers
+
+echo "Enter the first number"
+read a
+echo "Enter the second number"
+read b
+if ((a > b))
+then
+    echo "Greatest is $a"
+else
+    echo "Greatest is $b"
+fi
+
+
+//4. First N Natural Numbers
+
+echo "Enter the limit"
+read limit
+echo "First $limit natural numbers are:"
+for ((i=1; i<=limit; i++))
+do
+    echo $i
+done
+
+
+//5. Factorial of a Number
+
+echo "Enter the number"
+read n
+f=1
+for ((i=1; i<=n; i++))
+do
+    f=$(($f * $i))
+done
+echo "Factorial is $f"
+
+
+ //6. Fibonacci Series
+
+echo "Enter the limit"
+read n
+a=0
+b=1
+echo "Fibonacci series is:"
+for ((i=0; i<n; i++))
+do
+    echo "$a"
+    fib=$((a + b))
+    a=$b
+    b=$fib
+done
+
+
+//7. Simple Calculator
+
+echo "Enter the first number"
+read n1
+echo "Enter the second number"
+read n2
+echo "1. Addition"
+echo "2. Subtraction"
+echo "3. Multiplication"
+echo "4. Division"
+echo "Choose operation (1-4)"
+read op
+case $op in
+    1) r=$(($n1 + $n2))
+       echo "Answer is $r";;
+    2) r=$(($n1 - $n2))
+       echo "Answer is $r";;
+    3) r=$(($n1 * $n2))
+       echo "Answer is $r";;
+    4) r=$(($n1 / $n2))
+       echo "Answer is $r";;
+    *) echo "Wrong choice";;
+esac
