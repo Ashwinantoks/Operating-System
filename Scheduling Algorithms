@@ -1,0 +1,250 @@
+// 1. FCFS (First Come First Serve) Scheduling
+
+#include<stdio.h>
+int main() {
+    int p, sum = 0;
+    float total_WT = 0, total_TAT = 0;
+    printf("Enter the no of processes : ");
+    scanf("%d", &p);
+    
+    int P[p], ct[p], wt[p];
+    printf("Enter the burst time\n");
+    for(int i = 0; i < p; i++) {
+        printf("P%d : ", i);
+        scanf("%d", &P[i]);
+    }
+
+    for(int i = 0; i < p; i++) {
+        sum += P[i];
+        ct[i] = sum;
+        total_TAT += ct[i];
+    }
+
+    printf("\nGANTT Chart\n");
+    for(int i = 0; i < p; i++) printf("|\tP%d\t|", i);
+    printf("\n");
+    for(int i = 0; i < p; i++) printf(".................");
+    printf("\n0");
+    for(int i = 0; i < p; i++) printf("\t\t%d", ct[i]);
+
+    printf("\n\nProcess ID\tBT\tTAT\tWT");
+    for(int i = 0; i < p; i++) {
+        wt[i] = ct[i] - P[i];
+        total_WT += wt[i];
+        printf("\n  P%d\t\t%d\t%d\t%d", i, P[i], ct[i], wt[i]);
+    }
+
+    printf("\n\n Total Turn Around Time : %d", (int)total_TAT);
+    printf("\n Total Waiting Time     : %d", (int)total_WT);
+    printf("\nAverage Turn Around Time: %.2f", total_TAT / p);
+    printf("\nAverage Waiting Time    : %.2f\n", total_WT / p);
+
+    return 0;
+}
+
+
+//2. SJF (Shortest Job First) Scheduling
+
+#include<stdio.h>
+struct Short_Job_First {
+    int Process_Id, Turn_Around_Time, Burst_Time, Waiting_Time, Completion_Time;
+};
+
+int main() {
+    int temp, sum = 0, processes;
+    float Total_TAT = 0, Total_WT = 0;
+
+    printf("\nEnter the number of processes: ");
+    scanf("%d", &processes);
+
+    struct Short_Job_First sjf[processes];
+
+    for(int i = 0; i < processes; i++) sjf[i].Process_Id = i;
+
+    for(int i = 0; i < processes; i++) {
+        printf("Burst Time for P%d: ", i);
+        scanf("%d", &sjf[i].Burst_Time);
+    }
+
+    // Sorting
+    for(int i = 0; i < processes-1; i++) {
+        for(int j = 0; j < processes-i-1; j++) {
+            if(sjf[j+1].Burst_Time < sjf[j].Burst_Time) {
+                struct Short_Job_First t = sjf[j+1];
+                sjf[j+1] = sjf[j];
+                sjf[j] = t;
+            }
+        }
+    }
+
+    for(int i = 0; i < processes; i++) {
+        sum += sjf[i].Burst_Time;
+        sjf[i].Completion_Time = sum;
+        Total_TAT += sjf[i].Completion_Time;
+    }
+
+    for(int i = 0; i < processes; i++) {
+        sjf[i].Waiting_Time = sjf[i].Completion_Time - sjf[i].Burst_Time;
+        Total_WT += sjf[i].Waiting_Time;
+    }
+
+    printf("\nGANTT Chart\n");
+    for(int i = 0; i < processes; i++) printf("|\tP%d\t|", sjf[i].Process_Id);
+    printf("\n");
+    for(int i = 0; i < processes; i++) printf(".................");
+    printf("\n0");
+    for(int i = 0; i < processes; i++) printf("\t\t%d", sjf[i].Completion_Time);
+
+    printf("\n\nProcess ID\tBT\tTAT\tWT");
+    for(int i = 0; i < processes; i++) {
+        printf("\n  P%d\t\t%d\t%d\t%d", sjf[i].Process_Id,
+            sjf[i].Burst_Time, sjf[i].Completion_Time, sjf[i].Waiting_Time);
+    }
+
+    printf("\n\nTotal TAT : %d", (int)Total_TAT);
+    printf("\nTotal WT  : %d", (int)Total_WT);
+    printf("\nAvg TAT   : %.2f", Total_TAT / processes);
+    printf("\nAvg WT    : %.2f\n", Total_WT / processes);
+
+    return 0;
+}
+
+
+ //3. Priority Scheduling
+
+#include<stdio.h>
+struct Process {
+    int Process_Id, Burst_Time, Waiting_Time, Completion_Time, Priority;
+};
+
+int main() {
+    int temp, sum = 0, processes;
+    float Total_TAT = 0, Total_WT = 0;
+
+    printf("Enter the number of processes: ");
+    scanf("%d", &processes);
+
+    struct Process proc[processes];
+
+    for(int i = 0; i < processes; i++) {
+        proc[i].Process_Id = i;
+        printf("Burst Time for P%d: ", i);
+        scanf("%d", &proc[i].Burst_Time);
+        printf("Priority for P%d: ", i);
+        scanf("%d", &proc[i].Priority);
+    }
+
+    // Sorting by Priority
+    for(int i = 0; i < processes - 1; i++) {
+        for(int j = 0; j < processes - i - 1; j++) {
+            if(proc[j+1].Priority < proc[j].Priority) {
+                struct Process t = proc[j+1];
+                proc[j+1] = proc[j];
+                proc[j] = t;
+            }
+        }
+    }
+
+    for(int i = 0; i < processes; i++) {
+        sum += proc[i].Burst_Time;
+        proc[i].Completion_Time = sum;
+        Total_TAT += proc[i].Completion_Time;
+        proc[i].Waiting_Time = proc[i].Completion_Time - proc[i].Burst_Time;
+        Total_WT += proc[i].Waiting_Time;
+    }
+
+    printf("\nGANTT Chart\n");
+    for(int i = 0; i < processes; i++) printf("|\tP%d\t|", proc[i].Process_Id);
+    printf("\n");
+    for(int i = 0; i < processes; i++) printf(".................");
+    printf("\n0");
+    for(int i = 0; i < processes; i++) printf("\t\t%d", proc[i].Completion_Time);
+
+    printf("\n\nProcess ID\tBT\tPriority\tTAT\tWT");
+    for(int i = 0; i < processes; i++) {
+        printf("\n  P%d\t\t%d\t%d\t\t%d\t%d", proc[i].Process_Id,
+            proc[i].Burst_Time, proc[i].Priority, proc[i].Completion_Time, proc[i].Waiting_Time);
+    }
+
+    printf("\n\nTotal TAT : %d", (int)Total_TAT);
+    printf("\nTotal WT  : %d", (int)Total_WT);
+    printf("\nAvg TAT   : %.2f", Total_TAT / processes);
+    printf("\nAvg WT    : %.2f\n", Total_WT / processes);
+
+    return 0;
+}
+
+
+// 4. Round Robin Scheduling
+
+#include <stdio.h>
+struct process {
+    int pid, bt, remaining_bt;
+} a[10];
+
+int main() {
+    int n, slice, i, k = 0, time = 0, process_done = 0;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    int ct[n], tat[n], wt[n], gantt[100], gantt_time[100];
+    float totalTAT = 0, totalWT = 0;
+
+    for (i = 0; i < n; i++) {
+        printf("Burst time of P%d: ", i + 1);
+        scanf("%d", &a[i].bt);
+        a[i].pid = i + 1;
+        a[i].remaining_bt = a[i].bt;
+    }
+
+    printf("Enter time slice: ");
+    scanf("%d", &slice);
+
+    while (process_done < n) {
+        for (i = 0; i < n; i++) {
+            if (a[i].remaining_bt > 0) {
+                if (a[i].remaining_bt <= slice) {
+                    time += a[i].remaining_bt;
+                    a[i].remaining_bt = 0;
+                    ct[i] = time;
+                    gantt[k] = a[i].pid;
+                    gantt_time[k++] = time;
+                } else {
+                    time += slice;
+                    a[i].remaining_bt -= slice;
+                    gantt[k] = a[i].pid;
+                    gantt_time[k++] = time;
+                }
+            }
+        }
+        process_done = 0;
+        for (i = 0; i < n; i++)
+            if (a[i].remaining_bt == 0)
+                process_done++;
+    }
+
+    printf("\nGANTT CHART\n|");
+    for (i = 0; i < k; i++) printf("  P%d\t|", gantt[i]);
+    printf("\n");
+    for (i = 0; i < k; i++) printf("................");
+    printf("\n0\t\t");
+    for (i = 0; i < k; i++) printf("%d\t\t", gantt_time[i]);
+
+    for (i = 0; i < n; i++) {
+        tat[i] = ct[i];
+        wt[i] = tat[i] - a[i].bt;
+        totalTAT += tat[i];
+        totalWT += wt[i];
+    }
+
+    printf("\n\nProcess ID\tBT\tTAT\tWT");
+    for (i = 0; i < n; i++)
+        printf("\n  P%d\t\t%d\t%d\t%d", a[i].pid, a[i].bt, tat[i], wt[i]);
+
+    printf("\nTotal TAT = %.2f", totalTAT);
+    printf("\nTotal WT  = %.2f", totalWT);
+    printf("\nAverage TAT = %.2f", totalTAT / n);
+    printf("\nAverage WT  = %.2f\n", totalWT / n);
+
+    return 0;
+}
