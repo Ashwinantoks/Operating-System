@@ -1,0 +1,70 @@
+//Semaphore
+
+#include <stdio.h>
+
+int mutex = 1;
+int full = 0;
+int empty;
+int x = 0;
+
+int signal(int s) {
+    return (++s);
+}
+
+int wait(int s) {
+    return (--s);
+}
+
+void producer() {
+    mutex = wait(mutex);
+    full = signal(full);
+    empty = wait(empty);
+    x++;
+    printf("Item %d produced\n", x);
+    mutex = signal(mutex);
+}
+
+void consumer() {
+    mutex = wait(mutex);
+    full = wait(full);
+    empty = signal(empty);
+    printf("Item %d consumed\n", x);
+    x--;
+    mutex = signal(mutex);
+}
+
+int main() {
+    int op;
+
+    printf("Enter the buffer size: ");
+    scanf("%d", &empty); // empty represents buffer size
+
+    while (1) {
+        printf("\nEnter the option:\n1. Producer\n2. Consumer\n3. Exit\n>> ");
+        scanf("%d", &op);
+
+        switch (op) {
+            case 1:
+                if ((mutex == 1) && (empty != 0)) {
+                    producer();
+                } else {
+                    printf("Buffer full\n");
+                }
+                break;
+
+            case 2:
+                if ((mutex == 1) && (full != 0)) {
+                    consumer();
+                } else {
+                    printf("Buffer empty\n");
+                }
+                break;
+
+            case 3:
+                return 0;
+
+            default:
+                printf("Enter a valid option\n");
+        }
+    }
+}
