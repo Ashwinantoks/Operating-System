@@ -1,0 +1,154 @@
+ //First Fit Memory Allocation
+
+#include<stdio.h>
+int main(){
+int n,no_p,block[10],job[10],vis[10]={0};
+printf("Enter the no of memory blocks: ");
+scanf("%d",&n);
+for(int i=0;i<n;i++){
+printf("Enter size of block %d: ",i);
+scanf("%d",&block[i]);
+}
+printf("Enter no of jobs: ");
+scanf("%d",&no_p);
+for(int i=0;i<no_p;i++){
+printf("Enter the size of job %d: ",i);
+scanf("%d",&job[i]);
+}
+for(int i=0;i<no_p;i++){
+for(int j=0;j<n;j++){
+if(block[j]>=job[i]){
+vis[i]=block[j];
+block[j]-=job[i];
+break;
+}
+}
+}
+printf("----- Status of allocation -----\n");
+for(int i=0;i<no_p;i++){
+if(vis[i]==0){
+printf("Job %d is waiting\n",job[i]);
+}else{
+printf("Job %d is inserted into block %d\n",job[i],vis[i]);
+}
+}
+return 0;
+}
+
+
+
+//Best Fit Memory Allocation
+
+#include<stdio.h>
+struct block{int id;int size;};
+struct block b[10];
+void sort(struct block a[],int n){
+for(int i=0;i<n-1;i++){
+for(int j=0;j<n-i-1;j++){
+if(a[j].size>a[j+1].size){
+struct block temp=a[j];
+a[j]=a[j+1];
+a[j+1]=temp;
+}
+}
+}
+}
+int main(){
+int n,no_p,job[10],vis[10]={0};
+printf("Enter the no of memory blocks: ");
+scanf("%d",&n);
+for(int i=0;i<n;i++){
+b[i].id=i;
+printf("Enter size of block %d: ",i);
+scanf("%d",&b[i].size);
+}
+printf("Enter no of jobs: ");
+scanf("%d",&no_p);
+for(int i=0;i<no_p;i++){
+printf("Enter the size of job %d: ",i);
+scanf("%d",&job[i]);
+}
+sort(b,n);
+for(int i=0;i<no_p;i++){
+int allocated=0;
+for(int j=0;j<n;j++){
+if(b[j].size>=job[i]&&vis[i]==0){
+vis[i]=b[j].id;
+b[j].size-=job[i];
+allocated=1;
+break;
+}
+}
+if(!allocated){
+vis[i]=-1;
+}
+}
+printf("----- Status of allocation -----\n");
+for(int i=0;i<no_p;i++){
+if(vis[i]==-1){
+printf("Job %d is waiting\n",job[i]);
+}else{
+printf("Job %d is inserted into block %d\n",job[i],vis[i]);
+}
+}
+return 0;
+}
+
+
+
+//Worst Fit Memory Allocation
+
+#include<stdio.h>
+struct block{int id;int size;};
+struct block b[10];
+void sort(struct block a[],int n){
+for(int i=0;i<n-1;i++){
+for(int j=0;j<n-i-1;j++){
+if(a[j].size<a[j+1].size){
+struct block temp=a[j];
+a[j]=a[j+1];
+a[j+1]=temp;
+}
+}
+}
+}
+int main(){
+int n,no_p,job[10],vis[10]={0};
+printf("Enter the no of memory blocks: ");
+scanf("%d",&n);
+for(int i=0;i<n;i++){
+b[i].id=i;
+printf("Enter size of block %d: ",i);
+scanf("%d",&b[i].size);
+}
+printf("Enter no of jobs: ");
+scanf("%d",&no_p);
+for(int i=0;i<no_p;i++){
+printf("Enter the size of job %d: ",i);
+scanf("%d",&job[i]);
+}
+sort(b,n);
+for(int i=0;i<no_p;i++){
+int allocated=0;
+for(int j=0;j<n;j++){
+if(b[j].size>=job[i]&&vis[i]==0){
+vis[i]=b[j].id;
+b[j].size-=job[i];
+allocated=1;
+break;
+}
+}
+if(!allocated){
+vis[i]=-1;
+}
+}
+printf("----- Status of allocation -----\n");
+for(int i=0;i<no_p;i++){
+if(vis[i]==-1){
+printf("Job %d is waiting\n",job[i]);
+}else{
+printf("Job %d is inserted into block %d\n",job[i],vis[i]);
+}
+}
+return 0;
+}
